@@ -19,6 +19,31 @@ describe('API Endpoints', () => {
     await app.register(require('../routes/contacts'), { prefix: '/api' });
     await app.register(require('../routes/deals'), { prefix: '/api' });
     
+    // Add health endpoint
+    app.get('/health', async (request, reply) => {
+      return { 
+        status: 'ok', 
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime()
+      };
+    });
+    
+    // Add root endpoint
+    app.get('/', async (request, reply) => {
+      return {
+        message: 'Dumb CRM API',
+        version: '1.0.0',
+        endpoints: {
+          auth: '/api/auth',
+          users: '/api/users',
+          customers: '/api/customers',
+          contacts: '/api/contacts',
+          deals: '/api/deals',
+          health: '/health'
+        }
+      };
+    });
+    
     await app.ready();
   });
 

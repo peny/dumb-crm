@@ -19,6 +19,16 @@ describe('Authentication', () => {
       secret: 'test-secret'
     });
     await app.register(require('../routes/auth'), { prefix: '/api' });
+    
+    // Add health endpoint
+    app.get('/health', async (request, reply) => {
+      return { 
+        status: 'ok', 
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime()
+      };
+    });
+    
     await app.ready();
   });
 

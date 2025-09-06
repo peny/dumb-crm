@@ -1,4 +1,7 @@
 # Render deployment configuration
+# IMPORTANT: Deploy services manually to prevent infinite loops
+# Backend and Frontend should be deployed separately, not simultaneously
+
 services:
   # Backend Web Service
   - type: web
@@ -19,8 +22,9 @@ services:
     healthCheckPath: /health
     autoDeploy: false
     region: oregon
+    # Manual deployment only - no automatic triggers
 
-  # Frontend Static Site
+  # Frontend Static Site  
   - type: static
     name: dumb-crm-frontend
     buildCommand: cd frontend && npm install && npm run build
@@ -30,6 +34,7 @@ services:
         value: https://dumb-crm-backend.onrender.com
     autoDeploy: false
     region: oregon
+    # Manual deployment only - no automatic triggers
 
 databases:
   # PostgreSQL Database

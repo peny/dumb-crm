@@ -1,0 +1,4 @@
+# Render static site configuration
+routes:
+  - src: "/*"
+    dest: "/index.html"

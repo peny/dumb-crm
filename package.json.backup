@@ -4,9 +4,9 @@
   "description": "A simple CRM built with Fastify and Prisma",
   "main": "main.js",
   "scripts": {
-    "start": "prisma generate && prisma db push && node main.js",
+    "start": "node main.js",
     "dev": "nodemon main.js",
-    "build": "prisma generate",
+    "build": "prisma generate && prisma db push",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",

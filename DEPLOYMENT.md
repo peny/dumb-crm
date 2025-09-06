@@ -83,22 +83,19 @@ VITE_API_URL=https://your-backend-service.onrender.com
 
 ## Troubleshooting
 
-### Database Tables Not Created
-If you see errors like "table does not exist":
-1. **Check Build Logs**: Look for Prisma generation and database push errors
-2. **Manual Database Push**: In Render dashboard, go to your backend service → Shell
-3. **Run Commands**:
-   ```bash
-   npx prisma generate
-   npx prisma db push
-   ```
-4. **Redeploy**: Trigger a new deployment after manual database setup
+### Database Tables Not Created (Free Tier Solution)
+Since the free tier doesn't include shell access, the database tables are created automatically when the service starts:
+
+1. **Check Build Logs**: Look for any errors during the build process
+2. **Check Start Logs**: Look for Prisma generation and database push messages
+3. **Redeploy**: If tables aren't created, trigger a new deployment
+4. **Wait for First Request**: The service might take a moment to create tables on first startup
 
 ### Backend Issues
 - Check build logs for Prisma generation errors
 - Ensure DATABASE_URL is correctly set
 - Verify Node.js version is 18+
-- Check that `prisma db push` runs successfully during build
+- Check start logs for database table creation messages
 
 ### Frontend Issues
 - Check that VITE_API_URL points to correct backend
@@ -116,6 +113,7 @@ If you see errors like "table does not exist":
 - **Backend**: Sleeps after 15 minutes of inactivity
 - **Database**: 1GB storage limit
 - **Frontend**: Unlimited static hosting
+- **Shell Access**: Not available on free tier
 
 ## Custom Domain (Optional)
 

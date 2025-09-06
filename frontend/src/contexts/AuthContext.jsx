@@ -16,14 +16,22 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [authChecked, setAuthChecked] = useState(false)
   const navigate = useNavigate()
 
-  // Check if user is authenticated on app load
+  // Check if user is authenticated on app load (only once)
   useEffect(() => {
-    checkAuth()
-  }, [])
+    if (!authChecked) {
+      checkAuth()
+    }
+  }, [authChecked])
 
   const checkAuth = async () => {
+    if (authChecked) {
+      console.log('AuthContext: Auth already checked, skipping')
+      return
+    }
+    
     try {
       console.log('AuthContext: Starting auth check...')
       const response = await authAPI.me()
@@ -55,6 +63,7 @@ export const AuthProvider = ({ children }) => {
       }
     } finally {
       setLoading(false)
+      setAuthChecked(true)
     }
   }
 

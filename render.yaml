@@ -5,17 +5,20 @@ services:
     name: dumb-crm-backend
     env: node
     plan: free
-    buildCommand: npm install && npm run build
+    buildCommand: npm install && npm run deploy:build
     startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
+      - key: JWT_SECRET
+        generateValue: true
       - key: DATABASE_URL
         fromDatabase:
           name: dumb-crm-db
           property: connectionString
     healthCheckPath: /health
-    autoDeploy: true
+    autoDeploy: false
+    region: oregon
 
   # Frontend Static Site
   - type: static
@@ -25,8 +28,11 @@ services:
     envVars:
       - key: VITE_API_URL
         value: https://dumb-crm-backend.onrender.com
+    autoDeploy: false
+    region: oregon
 
 databases:
   # PostgreSQL Database
   - name: dumb-crm-db
     plan: free
+    region: oregon

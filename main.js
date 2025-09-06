@@ -9,10 +9,21 @@ const fastify = require('fastify')({
 
 // Register CORS
 fastify.register(require('@fastify/cors'), {
-  origin: true
+  origin: true,
+  credentials: true
+});
+
+// Register cookie support
+fastify.register(require('@fastify/cookie'));
+
+// Register JWT
+fastify.register(require('@fastify/jwt'), {
+  secret: process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production'
 });
 
 // Register routes
+fastify.register(require('./routes/auth'), { prefix: '/api' });
+fastify.register(require('./routes/users'), { prefix: '/api' });
 fastify.register(require('./routes/customers'), { prefix: '/api' });
 fastify.register(require('./routes/contacts'), { prefix: '/api' });
 fastify.register(require('./routes/deals'), { prefix: '/api' });
@@ -32,6 +43,8 @@ fastify.get('/', async (request, reply) => {
     message: 'Dumb CRM API',
     version: '1.0.0',
     endpoints: {
+      auth: '/api/auth',
+      users: '/api/users',
       customers: '/api/customers',
       contacts: '/api/contacts',
       deals: '/api/deals',
@@ -43,6 +56,17 @@ fastify.get('/', async (request, reply) => {
 // Start the server
 const start = async () => {
   try {
+    // Initialize default admin user if no users exist
+    const userProcedures = require('./db/users');
+    const defaultAdmin = await userProcedures.createDefaultAdmin();
+    
+    if (defaultAdmin) {
+      fastify.log.info('Default admin user created:');
+      fastify.log.info(`Email: ${defaultAdmin.email}`);
+      fastify.log.info('Password: admin123');
+      fastify.log.info('Please change the password after first login!');
+    }
+
     const port = process.env.PORT || 3000;
     const host = process.env.HOST || '0.0.0.0';
     

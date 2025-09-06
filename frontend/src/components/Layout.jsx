@@ -1,24 +1,39 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, Outlet } from 'react-router-dom'
 import { 
   Users, 
   UserCheck, 
   TrendingUp, 
   BarChart3,
   Menu,
-  X
+  X,
+  LogOut,
+  UserCog
 } from 'lucide-react'
 import { useState } from 'react'
+import { useAuth } from '../contexts/AuthContext'
+import toast from 'react-hot-toast'
 
-const navigation = [
-  { name: 'Dashboard', href: '/', icon: BarChart3 },
-  { name: 'Customers', href: '/customers', icon: Users },
-  { name: 'Contacts', href: '/contacts', icon: UserCheck },
-  { name: 'Deals', href: '/deals', icon: TrendingUp },
-]
-
-function Layout({ children }) {
+function Layout() {
   const location = useLocation()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { user, logout, isAdmin } = useAuth()
+
+  const navigation = [
+    { name: 'Dashboard', href: '/', icon: BarChart3 },
+    { name: 'Customers', href: '/customers', icon: Users },
+    { name: 'Contacts', href: '/contacts', icon: UserCheck },
+    { name: 'Deals', href: '/deals', icon: TrendingUp },
+    ...(isAdmin() ? [{ name: 'Users', href: '/users', icon: UserCog }] : [])
+  ]
+
+  const handleLogout = async () => {
+    try {
+      await logout()
+      toast.success('Logged out successfully')
+    } catch (error) {
+      toast.error('Logout failed')
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -101,8 +116,20 @@ function Layout({ children }) {
             <div className="flex flex-1"></div>
             <div className="flex items-center gap-x-4 lg:gap-x-6">
               <div className="text-sm text-gray-500">
-                Welcome to Dumb CRM
+                Welcome, {user?.name}
               </div>
+              {user?.role === 'admin' && (
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                  Admin
+                </span>
+              )}
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-x-2 text-sm text-gray-500 hover:text-gray-700"
+              >
+                <LogOut className="h-4 w-4" />
+                Logout
+              </button>
             </div>
           </div>
         </div>
@@ -110,7 +137,7 @@ function Layout({ children }) {
         {/* Page content */}
         <main className="py-6">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            {children}
+            <Outlet />
           </div>
         </main>
       </div>

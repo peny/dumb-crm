@@ -7,6 +7,7 @@ const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true, // Include cookies for authentication
 });
 
 // Request interceptor
@@ -27,7 +28,11 @@ apiClient.interceptors.response.use(
   },
   (error) => {
     console.error('API Error:', error.response?.data || error.message);
-    return Promise.reject(error.response?.data || error.message);
+    // If the response has data, return it; otherwise return the error message
+    if (error.response?.data) {
+      return Promise.reject(error.response.data);
+    }
+    return Promise.reject(error.message);
   }
 );
 
@@ -61,6 +66,27 @@ export const dealAPI = {
   create: (data) => apiClient.post('/api/deals', data),
   update: (id, data) => apiClient.put(`/api/deals/${id}`, data),
   delete: (id) => apiClient.delete(`/api/deals/${id}`),
+};
+
+// Auth API
+export const authAPI = {
+  login: (email, password) => apiClient.post('/api/auth/login', { email, password }),
+  logout: () => apiClient.post('/api/auth/logout'),
+  me: () => apiClient.get('/api/auth/me'),
+  changePassword: (currentPassword, newPassword) => 
+    apiClient.post('/api/auth/change-password', { currentPassword, newPassword }),
+  register: (userData) => apiClient.post('/api/auth/register', userData),
+};
+
+// User API (admin only)
+export const userAPI = {
+  getAll: () => apiClient.get('/api/users'),
+  getById: (id) => apiClient.get(`/api/users/${id}`),
+  create: (data) => apiClient.post('/api/users', data),
+  update: (id, data) => apiClient.put(`/api/users/${id}`, data),
+  delete: (id) => apiClient.delete(`/api/users/${id}`),
+  getStats: () => apiClient.get('/api/users/stats'),
+  toggleStatus: (id) => apiClient.post(`/api/users/${id}/toggle-status`),
 };
 
 // Health check

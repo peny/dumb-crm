@@ -35,13 +35,8 @@ apiClient.interceptors.response.use(
   (error) => {
     console.error('API Error:', error.response?.data || error.message);
     
-    // Handle authentication errors
-    if (error.response?.status === 401) {
-      // Clear any cached data and redirect to login
-      localStorage.clear();
-      sessionStorage.clear();
-      window.location.href = '/login';
-    }
+    // Don't automatically redirect on 401 - let components handle it
+    // This prevents infinite redirect loops
     
     // If the response has data, return it; otherwise return the error message
     if (error.response?.data) {

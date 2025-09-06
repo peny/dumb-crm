@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
-import { Eye, EyeOff, LogIn } from 'lucide-react'
+import { Eye, EyeOff, LogIn, CheckCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 const Login = () => {
@@ -9,8 +9,15 @@ const Login = () => {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
-  const { login } = useAuth()
+  const { login, isAuthenticated, user } = useAuth()
   const navigate = useNavigate()
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard')
+    }
+  }, [isAuthenticated, navigate])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -35,6 +42,37 @@ const Login = () => {
     } finally {
       setLoading(false)
     }
+  }
+
+  // Show debug message if already authenticated
+  if (isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8">
+          <div>
+            <div className="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-green-100">
+              <CheckCircle className="h-6 w-6 text-green-600" />
+            </div>
+            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+              Already Logged In
+            </h2>
+            <p className="mt-2 text-center text-sm text-gray-600">
+              Welcome back, {user?.name}! Redirecting to dashboard...
+            </p>
+          </div>
+          
+          <div className="mt-6 p-4 bg-green-50 rounded-md">
+            <h3 className="text-sm font-medium text-green-800 mb-2">Debug Info</h3>
+            <p className="text-xs text-green-700">
+              <strong>Status:</strong> Authenticated<br />
+              <strong>User:</strong> {user?.name} ({user?.email})<br />
+              <strong>Role:</strong> {user?.role}<br />
+              <strong>Redirecting to:</strong> /dashboard
+            </p>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (

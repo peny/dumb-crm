@@ -30,7 +30,7 @@ services:
     staticPublishPath: frontend/dist
     envVars:
       - key: VITE_API_URL
-        value: https://dumb-crm.onrender.com
+        value: https://dumb-crm-backend.onrender.com
     autoDeploy: true
     region: frankfurt
     # Auto-deploy enabled

@@ -60,3 +60,9 @@ jspm_packages/
 # OS
 .DS_Store
 Thumbs.db
+
+# Build outputs
+dist/
+build/
+frontend/dist/
+frontend/build/

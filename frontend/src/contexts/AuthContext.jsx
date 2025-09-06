@@ -85,6 +85,7 @@ export const AuthProvider = ({ children }) => {
       if (response.success) {
         setUser(response.data.user)
         setIsAuthenticated(true)
+        setAuthChecked(true) // Mark auth as checked
         return { success: true }
       }
       return { success: false, error: response.error }

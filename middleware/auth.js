@@ -64,15 +64,20 @@ function setAuthCookie(reply, token) {
   reply.setCookie('token', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    sameSite: 'none', // Changed from 'lax' to 'none' for cross-origin
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    path: '/'
+    path: '/',
+    domain: process.env.NODE_ENV === 'production' ? undefined : undefined // Let browser handle domain
   });
 }
 
 // Clear authentication cookie
 function clearAuthCookie(reply) {
-  reply.clearCookie('token', { path: '/' });
+  reply.clearCookie('token', { 
+    path: '/',
+    sameSite: 'none',
+    secure: process.env.NODE_ENV === 'production'
+  });
 }
 
 module.exports = {

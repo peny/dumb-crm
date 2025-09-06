@@ -36,7 +36,13 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error('Auth check failed:', error)
-      clearAuthState()
+      // Only clear auth state if it's a 401 error, not other network errors
+      if (error.response?.status === 401 || error.status === 401) {
+        clearAuthState()
+      } else {
+        // For other errors, just set loading to false without clearing auth
+        setLoading(false)
+      }
     } finally {
       setLoading(false)
     }

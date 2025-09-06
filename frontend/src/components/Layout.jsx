@@ -19,11 +19,11 @@ function Layout() {
   const { user, logout, isAdmin } = useAuth()
 
   const navigation = [
-    { name: 'Dashboard', href: '/', icon: BarChart3 },
-    { name: 'Customers', href: '/customers', icon: Users },
-    { name: 'Contacts', href: '/contacts', icon: UserCheck },
-    { name: 'Deals', href: '/deals', icon: TrendingUp },
-    ...(isAdmin() ? [{ name: 'Users', href: '/users', icon: UserCog }] : [])
+    { name: 'Dashboard', href: '/dashboard', icon: BarChart3 },
+    { name: 'Customers', href: '/dashboard/customers', icon: Users },
+    { name: 'Contacts', href: '/dashboard/contacts', icon: UserCheck },
+    { name: 'Deals', href: '/dashboard/deals', icon: TrendingUp },
+    ...(isAdmin() ? [{ name: 'Users', href: '/dashboard/users', icon: UserCog }] : [])
   ]
 
   const handleLogout = async () => {

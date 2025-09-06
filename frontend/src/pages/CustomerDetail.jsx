@@ -104,7 +104,7 @@ const CustomerDetail = () => {
     return (
       <div className="text-center py-8">
         <p className="text-gray-500">Customer not found.</p>
-        <Link to="/customers" className="btn btn-primary mt-4">
+        <Link to="/dashboard/customers" className="btn btn-primary mt-4">
           Back to Customers
         </Link>
       </div>
@@ -117,7 +117,7 @@ const CustomerDetail = () => {
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center">
           <Link
-            to="/customers"
+            to="/dashboard/customers"
             className="mr-4 text-gray-400 hover:text-gray-600"
           >
             <ArrowLeft className="h-5 w-5" />

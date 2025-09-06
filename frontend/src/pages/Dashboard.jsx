@@ -116,28 +116,28 @@ const Dashboard = () => {
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Link
-            to="/customers"
+            to="/dashboard/customers"
             className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
           >
             <Users className="h-5 w-5 text-primary-600 mr-3" />
             <span className="text-sm font-medium">View Customers</span>
           </Link>
           <Link
-            to="/contacts"
+            to="/dashboard/contacts"
             className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
           >
             <UserCheck className="h-5 w-5 text-primary-600 mr-3" />
             <span className="text-sm font-medium">View Contacts</span>
           </Link>
           <Link
-            to="/deals"
+            to="/dashboard/deals"
             className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
           >
             <TrendingUp className="h-5 w-5 text-primary-600 mr-3" />
             <span className="text-sm font-medium">View Deals</span>
           </Link>
           <Link
-            to="/deals"
+            to="/dashboard/deals"
             className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
           >
             <DollarSign className="h-5 w-5 text-primary-600 mr-3" />

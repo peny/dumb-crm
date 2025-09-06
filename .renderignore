@@ -1,0 +1,15 @@
+# Ignore backend files for static site deployment
+main.js
+package.json
+package-lock.json
+config.js
+routes/
+db/
+middleware/
+prisma/
+node_modules/
+*.log
+.env
+.env.local
+.env.production
+.env.development

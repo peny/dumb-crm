@@ -1,9 +1,12 @@
 const dealProcedures = require('../db/deals');
+const { authenticateToken } = require('../middleware/auth');
 
 // Deal routes
 async function dealRoutes(fastify, options) {
   // GET /deals - Get all deals
-  fastify.get('/deals', async (request, reply) => {
+  fastify.get('/deals', {
+    preHandler: [authenticateToken]
+  }, async (request, reply) => {
     try {
       const deals = await dealProcedures.getAll();
       return { success: true, data: deals };
@@ -15,7 +18,9 @@ async function dealRoutes(fastify, options) {
   });
 
   // GET /deals/:id - Get deal by ID
-  fastify.get('/deals/:id', async (request, reply) => {
+  fastify.get('/deals/:id', {
+    preHandler: [authenticateToken]
+  }, async (request, reply) => {
     try {
       const { id } = request.params;
       const deal = await dealProcedures.getById(id);
@@ -34,7 +39,9 @@ async function dealRoutes(fastify, options) {
   });
 
   // GET /deals/customer/:customerId - Get deals by customer ID
-  fastify.get('/deals/customer/:customerId', async (request, reply) => {
+  fastify.get('/deals/customer/:customerId', {
+    preHandler: [authenticateToken]
+  }, async (request, reply) => {
     try {
       const { customerId } = request.params;
       const deals = await dealProcedures.getByCustomerId(customerId);
@@ -48,7 +55,9 @@ async function dealRoutes(fastify, options) {
   });
 
   // GET /deals/status/:status - Get deals by status
-  fastify.get('/deals/status/:status', async (request, reply) => {
+  fastify.get('/deals/status/:status', {
+    preHandler: [authenticateToken]
+  }, async (request, reply) => {
     try {
       const { status } = request.params;
       const deals = await dealProcedures.getByStatus(status);
@@ -62,7 +71,9 @@ async function dealRoutes(fastify, options) {
   });
 
   // GET /deals/stats - Get deal statistics
-  fastify.get('/deals/stats', async (request, reply) => {
+  fastify.get('/deals/stats', {
+    preHandler: [authenticateToken]
+  }, async (request, reply) => {
     try {
       const stats = await dealProcedures.getStats();
       return { success: true, data: stats };
@@ -74,7 +85,9 @@ async function dealRoutes(fastify, options) {
   });
 
   // POST /deals - Create new deal
-  fastify.post('/deals', async (request, reply) => {
+  fastify.post('/deals', {
+    preHandler: [authenticateToken]
+  }, async (request, reply) => {
     try {
       const { customerId, title, description, value, status } = request.body;
       
@@ -113,7 +126,9 @@ async function dealRoutes(fastify, options) {
   });
 
   // PUT /deals/:id - Update deal
-  fastify.put('/deals/:id', async (request, reply) => {
+  fastify.put('/deals/:id', {
+    preHandler: [authenticateToken]
+  }, async (request, reply) => {
     try {
       const { id } = request.params;
       const { title, description, value, status } = request.body;
@@ -151,7 +166,9 @@ async function dealRoutes(fastify, options) {
   });
 
   // DELETE /deals/:id - Delete deal
-  fastify.delete('/deals/:id', async (request, reply) => {
+  fastify.delete('/deals/:id', {
+    preHandler: [authenticateToken]
+  }, async (request, reply) => {
     try {
       const { id } = request.params;
       await dealProcedures.delete(id);

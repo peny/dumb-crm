@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { authAPI } from '../api/client'
+import { useNavigate } from 'react-router-dom'
+import { authAPI, clearAllCache } from '../api/client'
 
 const AuthContext = createContext()
 
@@ -15,6 +16,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const navigate = useNavigate()
 
   // Check if user is authenticated on app load
   useEffect(() => {
@@ -30,16 +32,22 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(true)
       } else {
         console.log('Auth check failed:', response.error)
-        setUser(null)
-        setIsAuthenticated(false)
+        clearAuthState()
       }
     } catch (error) {
       console.error('Auth check failed:', error)
-      setUser(null)
-      setIsAuthenticated(false)
+      clearAuthState()
     } finally {
       setLoading(false)
     }
+  }
+
+  const clearAuthState = () => {
+    setUser(null)
+    setIsAuthenticated(false)
+    setLoading(false)
+    // Clear all cached data
+    clearAllCache()
   }
 
   const login = async (email, password) => {
@@ -64,8 +72,15 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error('Logout failed:', error)
     } finally {
-      setUser(null)
-      setIsAuthenticated(false)
+      // Clear all authentication state
+      clearAuthState()
+      
+      // Clear all cached data
+      clearAllCache()
+      
+      // Clear any cached data by reloading the page
+      // This ensures all components reset their state
+      window.location.href = '/login'
     }
   }
 
@@ -94,7 +109,8 @@ export const AuthProvider = ({ children }) => {
     logout,
     changePassword,
     isAdmin,
-    checkAuth
+    checkAuth,
+    clearAuthState
   }
 
   return (

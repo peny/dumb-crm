@@ -1,9 +1,12 @@
 const contactProcedures = require('../db/contacts');
+const { authenticateToken } = require('../middleware/auth');
 
 // Contact routes
 async function contactRoutes(fastify, options) {
   // GET /contacts - Get all contacts
-  fastify.get('/contacts', async (request, reply) => {
+  fastify.get('/contacts', {
+    preHandler: [authenticateToken]
+  }, async (request, reply) => {
     try {
       const contacts = await contactProcedures.getAll();
       return { success: true, data: contacts };
@@ -15,7 +18,9 @@ async function contactRoutes(fastify, options) {
   });
 
   // GET /contacts/:id - Get contact by ID
-  fastify.get('/contacts/:id', async (request, reply) => {
+  fastify.get('/contacts/:id', {
+    preHandler: [authenticateToken]
+  }, async (request, reply) => {
     try {
       const { id } = request.params;
       const contact = await contactProcedures.getById(id);
@@ -34,7 +39,9 @@ async function contactRoutes(fastify, options) {
   });
 
   // GET /contacts/customer/:customerId - Get contacts by customer ID
-  fastify.get('/contacts/customer/:customerId', async (request, reply) => {
+  fastify.get('/contacts/customer/:customerId', {
+    preHandler: [authenticateToken]
+  }, async (request, reply) => {
     try {
       const { customerId } = request.params;
       const contacts = await contactProcedures.getByCustomerId(customerId);
@@ -48,7 +55,9 @@ async function contactRoutes(fastify, options) {
   });
 
   // POST /contacts - Create new contact
-  fastify.post('/contacts', async (request, reply) => {
+  fastify.post('/contacts', {
+    preHandler: [authenticateToken]
+  }, async (request, reply) => {
     try {
       const { customerId, name, email, phone, position } = request.body;
       
@@ -82,7 +91,9 @@ async function contactRoutes(fastify, options) {
   });
 
   // PUT /contacts/:id - Update contact
-  fastify.put('/contacts/:id', async (request, reply) => {
+  fastify.put('/contacts/:id', {
+    preHandler: [authenticateToken]
+  }, async (request, reply) => {
     try {
       const { id } = request.params;
       const { name, email, phone, position } = request.body;
@@ -115,7 +126,9 @@ async function contactRoutes(fastify, options) {
   });
 
   // DELETE /contacts/:id - Delete contact
-  fastify.delete('/contacts/:id', async (request, reply) => {
+  fastify.delete('/contacts/:id', {
+    preHandler: [authenticateToken]
+  }, async (request, reply) => {
     try {
       const { id } = request.params;
       await contactProcedures.delete(id);

@@ -28,6 +28,15 @@ apiClient.interceptors.response.use(
   },
   (error) => {
     console.error('API Error:', error.response?.data || error.message);
+    
+    // Handle authentication errors
+    if (error.response?.status === 401) {
+      // Clear any cached data and redirect to login
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.href = '/login';
+    }
+    
     // If the response has data, return it; otherwise return the error message
     if (error.response?.data) {
       return Promise.reject(error.response.data);
@@ -92,6 +101,16 @@ export const userAPI = {
 // Health check
 export const healthAPI = {
   check: () => apiClient.get('/health'),
+};
+
+// Utility function to clear all cached data
+export const clearAllCache = () => {
+  localStorage.clear();
+  sessionStorage.clear();
+  // Clear any axios cache if it exists
+  if (apiClient.defaults.cache) {
+    apiClient.defaults.cache.clear();
+  }
 };
 
 export default apiClient;

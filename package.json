@@ -5,13 +5,14 @@
   "main": "main.js",
   "scripts": {
     "start": "prisma generate && prisma db push && node main.js",
-    "dev": "nodemon main.js",
+    "dev": "cp prisma/schema.sqlite.prisma prisma/schema.prisma && prisma generate && nodemon main.js",
     "build": "prisma generate",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "dev:setup": "cp prisma/schema.sqlite.prisma prisma/schema.prisma && prisma generate && prisma db push"
   },
   "dependencies": {
     "fastify": "^4.24.3",

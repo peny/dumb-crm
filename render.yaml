@@ -1,4 +1,6 @@
 # Render deployment configuration
+# Auto-deploy enabled for both services
+
 services:
   # Backend Web Service
   - type: web
@@ -17,10 +19,11 @@ services:
           name: dumb-crm-db
           property: connectionString
     healthCheckPath: /health
-    autoDeploy: false
-    region: oregon
+    autoDeploy: true
+    region: frankfurt
+    # Auto-deploy enabled
 
-  # Frontend Static Site
+  # Frontend Static Site  
   - type: static
     name: dumb-crm-frontend
     buildCommand: cd frontend && npm install && npm run build
@@ -28,11 +31,12 @@ services:
     envVars:
       - key: VITE_API_URL
         value: https://dumb-crm-backend.onrender.com
-    autoDeploy: false
-    region: oregon
+    autoDeploy: true
+    region: frankfurt
+    # Auto-deploy enabled
 
 databases:
   # PostgreSQL Database
   - name: dumb-crm-db
     plan: free
-    region: oregon
+    region: frankfurt

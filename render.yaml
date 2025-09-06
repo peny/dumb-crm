@@ -1,6 +1,5 @@
 # Render deployment configuration
-# IMPORTANT: Deploy services manually to prevent infinite loops
-# Backend and Frontend should be deployed separately, not simultaneously
+# Auto-deploy enabled for both services
 
 services:
   # Backend Web Service
@@ -20,9 +19,9 @@ services:
           name: dumb-crm-db
           property: connectionString
     healthCheckPath: /health
-    autoDeploy: false
+    autoDeploy: true
     region: frankfurt
-    # Manual deployment only - no automatic triggers
+    # Auto-deploy enabled
 
   # Frontend Static Site  
   - type: static
@@ -32,9 +31,9 @@ services:
     envVars:
       - key: VITE_API_URL
         value: https://dumb-crm-backend.onrender.com
-    autoDeploy: false
+    autoDeploy: true
     region: frankfurt
-    # Manual deployment only - no automatic triggers
+    # Auto-deploy enabled
 
 databases:
   # PostgreSQL Database

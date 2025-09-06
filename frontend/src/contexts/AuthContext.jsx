@@ -21,9 +21,12 @@ export const AuthProvider = ({ children }) => {
 
   // Check if user is authenticated on app load (only once)
   useEffect(() => {
-    if (!authChecked) {
-      checkAuth()
-    }
+    // Temporarily disabled to fix infinite loop
+    // if (!authChecked) {
+    //   checkAuth()
+    // }
+    setLoading(false)
+    setAuthChecked(true)
   }, [authChecked])
 
   const checkAuth = async () => {

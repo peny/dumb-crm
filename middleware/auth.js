@@ -7,34 +7,34 @@ async function authenticateToken(request, reply) {
   try {
     const token = request.cookies.token || request.headers.authorization?.replace('Bearer ', '');
     
-    console.log('Auth middleware - Cookies:', request.cookies);
-    console.log('Auth middleware - Headers:', request.headers);
-    console.log('Auth middleware - Token found:', !!token);
+    request.log.info('Auth middleware - Cookies:', request.cookies);
+    request.log.info('Auth middleware - Headers:', request.headers);
+    request.log.info('Auth middleware - Token found:', !!token);
     
     if (!token) {
-      console.log('Auth middleware - No token found');
+      request.log.info('Auth middleware - No token found');
       reply.code(401);
       reply.send({ success: false, error: 'Access token required' });
       return;
     }
 
     const decoded = request.server.jwt.verify(token);
-    console.log('Auth middleware - Token decoded:', decoded);
+    request.log.info('Auth middleware - Token decoded:', decoded);
     
     const user = await userProcedures.getById(decoded.userId);
-    console.log('Auth middleware - User found:', !!user);
+    request.log.info('Auth middleware - User found:', !!user);
     
     if (!user || !user.isActive) {
-      console.log('Auth middleware - User invalid or inactive');
+      request.log.info('Auth middleware - User invalid or inactive');
       reply.code(401);
       reply.send({ success: false, error: 'Invalid or inactive user' });
       return;
     }
 
     request.user = user;
-    console.log('Auth middleware - Authentication successful');
+    request.log.info('Auth middleware - Authentication successful');
   } catch (error) {
-    console.log('Auth middleware - Error:', error.message);
+    request.log.error('Auth middleware - Error:', error.message);
     reply.code(401);
     reply.send({ success: false, error: 'Invalid token' });
   }
@@ -80,7 +80,7 @@ function setAuthCookie(reply, token) {
     path: '/'
   };
   
-  console.log('Setting cookie with options:', cookieOptions);
+  reply.log.info('Setting cookie with options:', cookieOptions);
   reply.setCookie('token', token, cookieOptions);
 }
 
@@ -92,7 +92,7 @@ function clearAuthCookie(reply) {
     secure: process.env.NODE_ENV === 'production'
   };
   
-  console.log('Clearing cookie with options:', cookieOptions);
+  reply.log.info('Clearing cookie with options:', cookieOptions);
   reply.clearCookie('token', cookieOptions);
 }
 

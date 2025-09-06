@@ -50,8 +50,9 @@ describe('Login Component', () => {
     render(<MockedLogin />);
     
     expect(screen.getByText('Default Admin Account')).toBeInTheDocument();
-    expect(screen.getByText('admin@dumbcrm.com')).toBeInTheDocument();
-    expect(screen.getByText('admin123')).toBeInTheDocument();
+    // Use more flexible text matching for split elements
+    expect(screen.getByText(/admin@dumbcrm\.com/)).toBeInTheDocument();
+    expect(screen.getByText(/admin123/)).toBeInTheDocument();
   });
 
   test('form fields are interactive', () => {

@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node main.js",
     "dev": "nodemon main.js",
+    "build": "prisma generate",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
@@ -15,13 +16,16 @@
     "fastify": "^4.24.3",
     "@fastify/cors": "^8.4.0",
     "@prisma/client": "^5.7.1",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "prisma": "^5.7.1"
   },
   "devDependencies": {
-    "prisma": "^5.7.1",
     "nodemon": "^3.0.2"
   },
   "keywords": ["crm", "fastify", "prisma", "api"],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
 }

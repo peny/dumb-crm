@@ -176,3 +176,32 @@ This CRM follows a clean architecture pattern where:
 3. **Main Application** (`main.js`): Orchestrates the application setup
 
 This separation ensures that business logic is isolated from HTTP concerns and makes the codebase more maintainable and testable.
+
+## Deployment
+
+### Render Deployment
+
+This application is configured for easy deployment to Render. See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions.
+
+**Quick Deploy Steps:**
+1. Create PostgreSQL database on Render
+2. Deploy backend as Web Service
+3. Deploy frontend as Static Site
+4. Set environment variables
+5. Test your live CRM!
+
+### Environment Variables
+
+**Backend:**
+- `DATABASE_URL`: PostgreSQL connection string
+- `NODE_ENV`: Set to `production`
+
+**Frontend:**
+- `VITE_API_URL`: Your deployed backend URL
+
+### Database
+
+- **Development**: SQLite (local file)
+- **Production**: PostgreSQL (Render managed)
+
+The Prisma schema automatically adapts to the database provider based on the `DATABASE_URL` environment variable.

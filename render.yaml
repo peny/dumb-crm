@@ -15,6 +15,7 @@ services:
           name: dumb-crm-db
           property: connectionString
     healthCheckPath: /health
+    autoDeploy: true
 
   # Frontend Static Site
   - type: static

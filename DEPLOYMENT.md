@@ -29,6 +29,7 @@ This guide will help you deploy your Dumb CRM application to Render.
    - **Build Command**: `npm install && npm run build`
    - **Start Command**: `npm start`
    - **Node Version**: 18
+   - **Auto-Deploy**: Yes (for automatic redeployments)
 4. Add Environment Variables:
    - **DATABASE_URL**: Paste the PostgreSQL URL from Step 1
    - **NODE_ENV**: `production`
@@ -82,10 +83,22 @@ VITE_API_URL=https://your-backend-service.onrender.com
 
 ## Troubleshooting
 
+### Database Tables Not Created
+If you see errors like "table does not exist":
+1. **Check Build Logs**: Look for Prisma generation and database push errors
+2. **Manual Database Push**: In Render dashboard, go to your backend service → Shell
+3. **Run Commands**:
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
+4. **Redeploy**: Trigger a new deployment after manual database setup
+
 ### Backend Issues
 - Check build logs for Prisma generation errors
 - Ensure DATABASE_URL is correctly set
 - Verify Node.js version is 18+
+- Check that `prisma db push` runs successfully during build
 
 ### Frontend Issues
 - Check that VITE_API_URL points to correct backend
@@ -96,6 +109,7 @@ VITE_API_URL=https://your-backend-service.onrender.com
 - Ensure PostgreSQL database is running
 - Check connection string format
 - Verify database has proper permissions
+- Confirm tables are created (customers, contacts, deals)
 
 ## Free Tier Limitations
 

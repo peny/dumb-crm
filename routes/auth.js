@@ -43,9 +43,11 @@ async function authRoutes(fastify, options) {
 
       // Generate token
       const token = generateToken(request, user);
+      fastify.log.info('Login - Token generated:', !!token);
       
       // Set cookie
       setAuthCookie(reply, token);
+      fastify.log.info('Login - Cookie set');
 
       // Return user data (without password)
       const { password: _, ...userWithoutPassword } = user;
@@ -130,6 +132,7 @@ async function authRoutes(fastify, options) {
     preHandler: [authenticateToken]
   }, async (request, reply) => {
     try {
+      fastify.log.info('Auth /me endpoint called');
       return {
         success: true,
         data: request.user
@@ -138,6 +141,23 @@ async function authRoutes(fastify, options) {
       fastify.log.error(error);
       reply.code(500);
       return { success: false, error: 'Failed to get user data' };
+    }
+  });
+
+  // GET /auth/test - Test endpoint without authentication
+  fastify.get('/auth/test', async (request, reply) => {
+    try {
+      fastify.log.info('Auth test endpoint called');
+      return {
+        success: true,
+        message: 'Auth test endpoint working',
+        cookies: request.cookies,
+        headers: request.headers
+      };
+    } catch (error) {
+      fastify.log.error(error);
+      reply.code(500);
+      return { success: false, error: 'Test endpoint failed' };
     }
   });
 

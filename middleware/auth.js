@@ -7,23 +7,34 @@ async function authenticateToken(request, reply) {
   try {
     const token = request.cookies.token || request.headers.authorization?.replace('Bearer ', '');
     
+    request.log.info('Auth middleware - Cookies:', request.cookies);
+    request.log.info('Auth middleware - Headers:', request.headers);
+    request.log.info('Auth middleware - Token found:', !!token);
+    
     if (!token) {
+      request.log.info('Auth middleware - No token found');
       reply.code(401);
       reply.send({ success: false, error: 'Access token required' });
       return;
     }
 
     const decoded = request.server.jwt.verify(token);
+    request.log.info('Auth middleware - Token decoded:', decoded);
+    
     const user = await userProcedures.getById(decoded.userId);
+    request.log.info('Auth middleware - User found:', !!user);
     
     if (!user || !user.isActive) {
+      request.log.info('Auth middleware - User invalid or inactive');
       reply.code(401);
       reply.send({ success: false, error: 'Invalid or inactive user' });
       return;
     }
 
     request.user = user;
+    request.log.info('Auth middleware - Authentication successful');
   } catch (error) {
+    request.log.error('Auth middleware - Error:', error.message);
     reply.code(401);
     reply.send({ success: false, error: 'Invalid token' });
   }
@@ -61,23 +72,28 @@ function generateToken(request, user) {
 
 // Set authentication cookie
 function setAuthCookie(reply, token) {
-  reply.setCookie('token', token, {
+  const cookieOptions = {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'none', // Changed from 'lax' to 'none' for cross-origin
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    path: '/',
-    domain: process.env.NODE_ENV === 'production' ? undefined : undefined // Let browser handle domain
-  });
+    path: '/'
+  };
+  
+  reply.log.info('Setting cookie with options:', cookieOptions);
+  reply.setCookie('token', token, cookieOptions);
 }
 
 // Clear authentication cookie
 function clearAuthCookie(reply) {
-  reply.clearCookie('token', { 
+  const cookieOptions = {
     path: '/',
-    sameSite: 'none',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     secure: process.env.NODE_ENV === 'production'
-  });
+  };
+  
+  reply.log.info('Clearing cookie with options:', cookieOptions);
+  reply.clearCookie('token', cookieOptions);
 }
 
 module.exports = {

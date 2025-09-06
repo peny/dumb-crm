@@ -21,7 +21,7 @@ services:
           property: connectionString
     healthCheckPath: /health
     autoDeploy: false
-    region: oregon
+    region: frankfurt
     # Manual deployment only - no automatic triggers
 
   # Frontend Static Site  
@@ -33,11 +33,11 @@ services:
       - key: VITE_API_URL
         value: https://dumb-crm-backend.onrender.com
     autoDeploy: false
-    region: oregon
+    region: frankfurt
     # Manual deployment only - no automatic triggers
 
 databases:
   # PostgreSQL Database
   - name: dumb-crm-db
     plan: free
-    region: oregon
+    region: frankfurt

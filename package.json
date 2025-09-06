@@ -12,7 +12,8 @@
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
     "postinstall": "prisma generate",
-    "dev:setup": "cp prisma/schema.sqlite.prisma prisma/schema.prisma && prisma generate && prisma db push"
+    "dev:setup": "cp prisma/schema.sqlite.prisma prisma/schema.prisma && prisma generate && prisma db push",
+    "deploy:build": "prisma generate && prisma migrate deploy"
   },
   "dependencies": {
     "fastify": "^4.24.3",

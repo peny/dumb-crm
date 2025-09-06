@@ -7,23 +7,34 @@ async function authenticateToken(request, reply) {
   try {
     const token = request.cookies.token || request.headers.authorization?.replace('Bearer ', '');
     
+    console.log('Auth middleware - Cookies:', request.cookies);
+    console.log('Auth middleware - Headers:', request.headers);
+    console.log('Auth middleware - Token found:', !!token);
+    
     if (!token) {
+      console.log('Auth middleware - No token found');
       reply.code(401);
       reply.send({ success: false, error: 'Access token required' });
       return;
     }
 
     const decoded = request.server.jwt.verify(token);
+    console.log('Auth middleware - Token decoded:', decoded);
+    
     const user = await userProcedures.getById(decoded.userId);
+    console.log('Auth middleware - User found:', !!user);
     
     if (!user || !user.isActive) {
+      console.log('Auth middleware - User invalid or inactive');
       reply.code(401);
       reply.send({ success: false, error: 'Invalid or inactive user' });
       return;
     }
 
     request.user = user;
+    console.log('Auth middleware - Authentication successful');
   } catch (error) {
+    console.log('Auth middleware - Error:', error.message);
     reply.code(401);
     reply.send({ success: false, error: 'Invalid token' });
   }
@@ -61,23 +72,28 @@ function generateToken(request, user) {
 
 // Set authentication cookie
 function setAuthCookie(reply, token) {
-  reply.setCookie('token', token, {
+  const cookieOptions = {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'none', // Changed from 'lax' to 'none' for cross-origin
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    path: '/',
-    domain: process.env.NODE_ENV === 'production' ? undefined : undefined // Let browser handle domain
-  });
+    path: '/'
+  };
+  
+  console.log('Setting cookie with options:', cookieOptions);
+  reply.setCookie('token', token, cookieOptions);
 }
 
 // Clear authentication cookie
 function clearAuthCookie(reply) {
-  reply.clearCookie('token', { 
+  const cookieOptions = {
     path: '/',
-    sameSite: 'none',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     secure: process.env.NODE_ENV === 'production'
-  });
+  };
+  
+  console.log('Clearing cookie with options:', cookieOptions);
+  reply.clearCookie('token', cookieOptions);
 }
 
 module.exports = {

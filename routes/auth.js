@@ -43,9 +43,11 @@ async function authRoutes(fastify, options) {
 
       // Generate token
       const token = generateToken(request, user);
+      console.log('Login - Token generated:', !!token);
       
       // Set cookie
       setAuthCookie(reply, token);
+      console.log('Login - Cookie set');
 
       // Return user data (without password)
       const { password: _, ...userWithoutPassword } = user;

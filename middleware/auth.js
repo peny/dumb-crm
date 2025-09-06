@@ -9,7 +9,8 @@ async function authenticateToken(request, reply) {
     
     if (!token) {
       reply.code(401);
-      return { success: false, error: 'Access token required' };
+      reply.send({ success: false, error: 'Access token required' });
+      return;
     }
 
     const decoded = request.server.jwt.verify(token);
@@ -17,37 +18,32 @@ async function authenticateToken(request, reply) {
     
     if (!user || !user.isActive) {
       reply.code(401);
-      return { success: false, error: 'Invalid or inactive user' };
+      reply.send({ success: false, error: 'Invalid or inactive user' });
+      return;
     }
 
     request.user = user;
-    return;
   } catch (error) {
     reply.code(401);
-    return { success: false, error: 'Invalid token' };
+    reply.send({ success: false, error: 'Invalid token' });
   }
 }
 
 // Admin role middleware
 async function requireAdmin(request, reply) {
   try {
-    const authResult = await authenticateToken(request, reply);
-    
-    // If authentication failed, return the error
-    if (authResult) {
-      return authResult;
-    }
+    // First authenticate the user
+    await authenticateToken(request, reply);
     
     // Check if user is admin
     if (request.user.role !== 'admin') {
       reply.code(403);
-      return { success: false, error: 'Admin access required' };
+      reply.send({ success: false, error: 'Admin access required' });
+      return;
     }
-    
-    return;
   } catch (error) {
     reply.code(403);
-    return { success: false, error: 'Admin access required' };
+    reply.send({ success: false, error: 'Admin access required' });
   }
 }
 

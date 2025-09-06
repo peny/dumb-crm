@@ -1,9 +1,12 @@
 const customerProcedures = require('../db/customers');
+const { authenticateToken } = require('../middleware/auth');
 
 // Customer routes
 async function customerRoutes(fastify, options) {
   // GET /customers - Get all customers
-  fastify.get('/customers', async (request, reply) => {
+  fastify.get('/customers', {
+    preHandler: [authenticateToken]
+  }, async (request, reply) => {
     try {
       const customers = await customerProcedures.getAll();
       return { success: true, data: customers };
@@ -15,7 +18,9 @@ async function customerRoutes(fastify, options) {
   });
 
   // GET /customers/:id - Get customer by ID
-  fastify.get('/customers/:id', async (request, reply) => {
+  fastify.get('/customers/:id', {
+    preHandler: [authenticateToken]
+  }, async (request, reply) => {
     try {
       const { id } = request.params;
       const customer = await customerProcedures.getById(id);
@@ -34,7 +39,9 @@ async function customerRoutes(fastify, options) {
   });
 
   // POST /customers - Create new customer
-  fastify.post('/customers', async (request, reply) => {
+  fastify.post('/customers', {
+    preHandler: [authenticateToken]
+  }, async (request, reply) => {
     try {
       const { name, email, phone, company } = request.body;
       
@@ -67,7 +74,9 @@ async function customerRoutes(fastify, options) {
   });
 
   // PUT /customers/:id - Update customer
-  fastify.put('/customers/:id', async (request, reply) => {
+  fastify.put('/customers/:id', {
+    preHandler: [authenticateToken]
+  }, async (request, reply) => {
     try {
       const { id } = request.params;
       const { name, email, phone, company } = request.body;
@@ -105,7 +114,9 @@ async function customerRoutes(fastify, options) {
   });
 
   // DELETE /customers/:id - Delete customer
-  fastify.delete('/customers/:id', async (request, reply) => {
+  fastify.delete('/customers/:id', {
+    preHandler: [authenticateToken]
+  }, async (request, reply) => {
     try {
       const { id } = request.params;
       await customerProcedures.delete(id);
@@ -125,7 +136,9 @@ async function customerRoutes(fastify, options) {
   });
 
   // GET /customers/search?q=query - Search customers
-  fastify.get('/customers/search', async (request, reply) => {
+  fastify.get('/customers/search', {
+    preHandler: [authenticateToken]
+  }, async (request, reply) => {
     try {
       const { q } = request.query;
       

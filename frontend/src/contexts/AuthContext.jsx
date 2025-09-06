@@ -25,21 +25,31 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuth = async () => {
     try {
+      console.log('AuthContext: Starting auth check...')
       const response = await authAPI.me()
-      console.log('Auth check response:', response)
+      console.log('AuthContext: Auth check response:', response)
       if (response.success) {
+        console.log('AuthContext: Authentication successful, setting user')
         setUser(response.data)
         setIsAuthenticated(true)
       } else {
-        console.log('Auth check failed:', response.error)
+        console.log('AuthContext: Auth check failed:', response.error)
         clearAuthState()
       }
     } catch (error) {
-      console.error('Auth check failed:', error)
+      console.error('AuthContext: Auth check failed with error:', error)
+      console.error('AuthContext: Error details:', {
+        message: error.message,
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data
+      })
       // Only clear auth state if it's a 401 error, not other network errors
       if (error.response?.status === 401 || error.status === 401) {
+        console.log('AuthContext: 401 error, clearing auth state')
         clearAuthState()
       } else {
+        console.log('AuthContext: Non-401 error, just setting loading to false')
         // For other errors, just set loading to false without clearing auth
         setLoading(false)
       }
